@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { check, validationResult } = require("express-validator/check");
+const { check, validationResult } = require("express-validator");
 const User = require("../modals/User");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const stripe = require("stripe")(
   "sk_test_51IOB8xHr9xsmMfAiaPK89B4zEq6Hftyl6WMDE2XXsRUb6bFHqMlNQF65eLZi5CIDoReBh6aejWoM6dU4PZIA6iF200sHOGcAQd"
 );
+const config = require("config");
 
 // @router  POST api/user
 //@desc     REGISTER A USER
@@ -34,7 +36,7 @@ router.post(
       if (user) {
         return res.status(400).json({ msg: "User already existst" });
       }
-
+      // Stripe Part
       const stripeUser = await stripe.customers.create({
         email,
       });
@@ -54,7 +56,23 @@ router.post(
 
       await user.save();
 
-      res.send("User saved");
+      const payload = {
+        user: {
+          id: user.id,
+        },
+      };
+
+      jwt.sign(
+        payload,
+        config.get("jwtSecret"),
+        {
+          expiresIn: 360000,
+        },
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
     } catch (err) {
       console.error(err.message);
       res.status(500).json({ msg: "Server error" });
