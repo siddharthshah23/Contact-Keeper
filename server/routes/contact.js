@@ -24,9 +24,13 @@ router.get("/", auth, async (req, res) => {
 //@router  POST api/contact
 //@desc     Create a new contact
 //@access   private
-router.post("/", (req, res) => {
-  res.send({ msg: "Add a new user" });
-});
+router.post(
+  "/",
+  [auth, [check("name", "Name is required").notEmpty()]],
+  (req, res) => {
+    res.send({ msg: "Add a new user" });
+  }
+);
 
 //@router  GET api/contact/:id"
 //@desc     Edit a user

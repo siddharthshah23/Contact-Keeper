@@ -6,6 +6,9 @@ const config = require("config");
 const jwt = require("jsonwebtoken");
 const User = require("../modals/User");
 const auth = require("../../middleware/Auth");
+const stripe = require("stripe")(
+  "sk_test_51IOB8xHr9xsmMfAiaPK89B4zEq6Hftyl6WMDE2XXsRUb6bFHqMlNQF65eLZi5CIDoReBh6aejWoM6dU4PZIA6iF200sHOGcAQd"
+);
 
 // @router  GET api/auth
 //@desc     Get a logged in a user
@@ -13,7 +16,13 @@ const auth = require("../../middleware/Auth");
 router.get("/", auth, async (req, res) => {
   try {
     const user = await User.find({ _id: req.user.id }).select("-password");
-    res.json(user);
+    console.log(user);
+    const invoices = await stripe.invoices.list({
+      customer: user.stripeid,
+      status: "open",
+    });
+    // console.log(user);
+    res.json(invoices);
   } catch (error) {
     console.error(error.msg);
     res.status(500).send("Server error");
