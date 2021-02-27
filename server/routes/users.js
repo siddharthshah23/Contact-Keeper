@@ -22,6 +22,7 @@ router.post(
       "Please enter a password with minimum 8 character"
     ).isLength({ min: 8 }),
   ],
+
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -79,5 +80,20 @@ router.post(
     }
   }
 );
+
+// Testing Stripe Part
+
+// router.get("/:id", async (req, res) => {
+//   try {
+//     const invoices = await stripe.invoices.list({
+//       customer: req.header,
+//       status: "open",
+//     });
+//     //console.log(invoices);
+//     res.send(invoices);
+//   } catch (err) {
+//     console.log(err.message);
+//   }
+// });
 
 module.exports = router;
