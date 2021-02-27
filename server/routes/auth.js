@@ -12,7 +12,7 @@ const auth = require("../../middleware/Auth");
 //@access   private
 router.get("/", auth, async (req, res) => {
   try {
-    const user = await User.find({ id: req.user.id }).select("-password");
+    const user = await User.find({ _id: req.user.id }).select("-password");
     res.json(user);
   } catch (error) {
     console.error(error.msg);
@@ -52,6 +52,7 @@ router.post(
       const payload = {
         user: {
           id: user.id,
+          stripeid: user.stripeid,
         },
       };
 

@@ -42,13 +42,13 @@ router.post(
         email,
       });
 
-      const { id } = stripeUser;
+      const stripeid = stripeUser.id;
 
       user = new User({
         name,
         email,
         password,
-        id,
+        stripeid,
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -59,7 +59,8 @@ router.post(
 
       const payload = {
         user: {
-          id: user.id,
+          id: user._id,
+          stripeid,
         },
       };
 
