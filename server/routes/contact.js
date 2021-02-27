@@ -27,8 +27,26 @@ router.get("/", auth, async (req, res) => {
 router.post(
   "/",
   [auth, [check("name", "Name is required").notEmpty()]],
-  (req, res) => {
-    res.send({ msg: "Add a new user" });
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { name, email, phone, type } = req.body;
+
+    try {
+      const newContact = new Contact({
+        name,
+        email,
+        phone,
+        type,
+        user: req.user.id,
+      });
+      const contact = await newContact.save();
+      res.json(contact);
+    } catch (error) {
+      res.status(500).send("Server error");
+    }
   }
 );
 
