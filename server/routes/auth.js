@@ -19,7 +19,7 @@ router.get("/", auth, async (req, res) => {
     console.log(user);
     const invoices = await stripe.invoices.list({
       customer: user.stripeid,
-      status: "open",
+      status: "paid",
     });
     // console.log(user);
     res.json(invoices);
