@@ -28,7 +28,8 @@
     "express-validator": "^6.10.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.18",
-    "stripe": "^8.137.0"
+    "stripe": "^8.137.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "concurrently": "^6.0.0",
